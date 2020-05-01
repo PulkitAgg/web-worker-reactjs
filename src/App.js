@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import WebWorker from './Workers/workerSetup';
+import worker from './Workers/worker';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+class App extends Component {
+
+  componentDidMount() {
+    this.worker = new WebWorker(worker);
+    this.worker.addEventListener('message', event => {
+      const data = event.data;
+      console.log('data from web worker', data)
+    });
+  }
+
+  callWorker = () => {
+    this.worker.postMessage(5);
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <p>
+            This repo explain how we can use web workers in react js
+
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          <button
+            onClick={this.callWorker}
+          >Click Executing web worker</button>
+        </header>
+      </div>
+    );
+  }
+
 }
 
 export default App;
